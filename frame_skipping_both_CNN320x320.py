@@ -50,7 +50,7 @@ if __name__ == '__main__':
                 frame_counter += 1
             #display processing
            
-            #naprawic display rozdzielczosc
+            #naprawic display rozdzielczosc tutaj
         
             x_display = 0        
             y_display = (display_size[0] - display_size[1]) // 2
