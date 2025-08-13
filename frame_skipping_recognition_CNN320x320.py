@@ -14,7 +14,7 @@ if __name__ == '__main__':
     org, fontFace, fontScale, color, thickness = text_properties()
     ready = False
 
-    #frame skipping
+    #frame skipmping
     frame_buffer = 2
     frame_counter = 0
     previous_face = []

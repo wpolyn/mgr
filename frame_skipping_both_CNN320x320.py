@@ -11,6 +11,11 @@ reference_face = None
 threshold = 0.363
 if __name__ == '__main__':
     cap, img_src = initialize_camera()
+    #cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+    #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
+    #width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    #height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    #print(width, height)
     org, fontFace, fontScale, color, thickness = text_properties()
     ready = False
 
@@ -21,23 +26,25 @@ if __name__ == '__main__':
 
     while (cap.isOpened()):
         ret, image = cap.read()
+        image = cv2.flip(image,1)
         key = cv2.waitKey(1) & 0xFF
         if ret:
             if frame_counter % frame_buffer == 0:
                 #model input processing
-                h, w = image.shape[:2]
-                x_input = (w - crop_size) // 2
-                y_input = (h - crop_size) // 2
-                image = image[y_input:y_input+crop_size, x_input:x_input+crop_size]
-                image = cv2.resize(image, input_size)
-                retval, faces = detector.detect(image)
+                h, w = image.shape[:2] #h=480 w=640
+                x_input = (w - crop_size) // 2 #160
+                y_input = (h - crop_size) // 2 #80
+                feed = image[y_input:y_input+crop_size, x_input:x_input+crop_size] #y: 80<->400=320 x: 160<->480=320
+                feed = cv2.resize(feed, input_size)
+                #feed = cv2.rotate(feed, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                retval, faces = detector.detect(feed)
 
                 #
                 previous_face = []
                 if faces is not None:
                     for face in faces:
                         x, y, w, h = map(int, face[:4])
-                        aligned_face = recognizer.alignCrop(image, face)
+                        aligned_face = recognizer.alignCrop(feed, face)
                         features_face = recognizer.feature(aligned_face)
                         #
                         if ready and reference_face is None:
@@ -51,12 +58,14 @@ if __name__ == '__main__':
             #display processing
            
             #naprawic display rozdzielczosc tutaj teraz
-        
-            x_display = 0        
-            y_display = (display_size[0] - display_size[1]) // 2
-            display = image[y_display:y_display+display_size[1],x_display:display_size[0]]
-            display = cv2.flip(display,1)
-            display = cv2.rotate(display, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            #jeżeli 
+            #480x640
+            #to wtedy wspolrzedne twarzy do modyfikacji rowniez, chyba o pół?
+            display = cv2.resize(image, display_size)
+            #x_display = 0        
+            #y_display = (display_size[0] - display_size[1]) // 2
+            #display = image[y_display:y_display+display_size[1],x_display:display_size[0]]
+            #display = cv2.rotate(display, cv2.ROTATE_90_COUNTERCLOCKWISE)
             for face, recognition in previous_face:
                 x, y, w, h = map(int, face[:4])
                 cv2.rectangle(display, (x, y), (x + w, y + h), (255, 0, 0), 2)
