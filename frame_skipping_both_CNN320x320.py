@@ -6,16 +6,11 @@ display_size = (320, 240)
 crop_size = 320
 detector = cv2.FaceDetectorYN.create("models/yunet/yunet_n_320_320.onnx", "", input_size)
 recognizer = cv2.FaceRecognizerSF.create("models/sface/face_recognition_sface_2021dec.onnx", "")
-known_faces = []
+#known_faces = []
 reference_face = None
 threshold = 0.363
 if __name__ == '__main__':
     cap, img_src = initialize_camera()
-    #cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-    #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
-    #width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    #height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    #print(width, height)
     org, fontFace, fontScale, color, thickness = text_properties()
     ready = False
 
@@ -31,9 +26,9 @@ if __name__ == '__main__':
         if ret:
             if frame_counter % frame_buffer == 0:
                 #model input processing
-                h, w = image.shape[:2] #h=480 w=640
-                x_input = (w - crop_size) // 2 #160
-                y_input = (h - crop_size) // 2 #80
+                h_input, w_input = image.shape[:2] #h=480 w=640
+                x_input = (w_input - crop_size) // 2 #160
+                y_input = (h_input - crop_size) // 2 #80
                 feed = image[y_input:y_input+crop_size, x_input:x_input+crop_size] #y: 80<->400=320 x: 160<->480=320
                 feed = cv2.resize(feed, input_size)
                 #feed = cv2.rotate(feed, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -56,18 +51,19 @@ if __name__ == '__main__':
             else:
                 frame_counter += 1
             #display processing
-           
-            #naprawic display rozdzielczosc tutaj teraz
-            #jeżeli 
-            #480x640
-            #to wtedy wspolrzedne twarzy do modyfikacji rowniez, chyba o pół?
+            
             display = cv2.resize(image, display_size)
-            #x_display = 0        
-            #y_display = (display_size[0] - display_size[1]) // 2
-            #display = image[y_display:y_display+display_size[1],x_display:display_size[0]]
-            #display = cv2.rotate(display, cv2.ROTATE_90_COUNTERCLOCKWISE)
             for face, recognition in previous_face:
                 x, y, w, h = map(int, face[:4])
+                x = x + 160
+                y = y + 80
+
+                
+                x = int(x/2)
+                y = int(y/2)
+                w = int(w/2)
+                h = int(h/2)
+            
                 cv2.rectangle(display, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 if recognition is not None:
                     if recognition > threshold:
@@ -75,10 +71,12 @@ if __name__ == '__main__':
                     else:
                         label = f"Nie-Wojtas: {recognition:.2f}"
                     cv2.putText(display, label, (x, y -10), fontFace, fontScale, color, thickness)
+            display = cv2.rotate(display, cv2.ROTATE_90_COUNTERCLOCKWISE)
             cv2.imshow('frame', display)
             
             if key == ord('a') and not ready:
                 ready = True
+                reference_face = None
             #click B to exit
             elif key == ord('b'):
                 break
