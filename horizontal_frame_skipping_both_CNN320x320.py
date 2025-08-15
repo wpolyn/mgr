@@ -54,8 +54,8 @@ if __name__ == '__main__':
             display = cv2.resize(image, display_size)
             for face, recognition in previous_face:
                 x, y, w, h = map(int, face[:4])
-                x = x + 160
-                y = y + 80
+                x = x + x_input
+                y = y + y_input
 
                 
                 x = int(x/2)
