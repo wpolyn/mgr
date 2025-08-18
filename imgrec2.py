@@ -1,24 +1,14 @@
 import os
 import pickle
-import time
 import numpy as np
-from PIL import Image
+
 from models import initialize_detector, initialize_recognizer
 
-'''
-#TODO
-WYODRĘBNIĆ LABELS I IMAGES NA 2 FUNKCJE?
-ZAPISYWANIE LABELEK JAKO APPENDOWANIE, NIE NADPISANIE?
-'''
 def get_images_and_labels(path):
     image_paths = [os.path.join(path, f) for f in os.listdir(path)] 
     face_samples = [] 
     labels = []
     for image_path in image_paths:
-        #color image to grayscale
-        image = Image.open(image_path).convert('L')
-        #grayscale image into a Numpy array
-        image_np = np.array(image, 'uint8')
         #filter out non-jpg
         if os.path.split(image_path)[-1].split(".")[-1] != 'jpg':
             continue
@@ -63,11 +53,8 @@ if __name__ == '__main__':
 
     #train the model
     print("Training the model...")
-    training_start = time.time()
+
     recognizer.train(faces, np.array(ids))
-    training_end = time.time()
-    training_time = int((training_end - training_start)*1000)
-    print(f"Training completed successfully in {training_time} ms.")
 
     #save the model .yml file
     print("Saving the model...")
