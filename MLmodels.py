@@ -15,13 +15,11 @@ def initialize_detector():
             choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
             if choice == 1:
                 detector_name = "HAARrcascades"
-                directory = cv2.data.haarcascades
-                fileName = "haarcascade_frontalface_default.xml"
+                detector_path = "/usr/local/share/opencv4/haarcascades/haarcascade_frontalface_default.xml"
             
             elif choice == 2:
                 detector_name = "LBPcascades"
-                directory = cv2.data.lbpcascades
-                fileName = "lbpcascade_frontalface.xml"
+                detector_path = "/usr/local/share/opencv4/lbpcascades/lbpcascade_frontalface.xml"
 
             else:
                 print(f"Your input {choice} does not correspond to any model. Please modify your input.")
@@ -30,7 +28,7 @@ def initialize_detector():
             print("Please choose one of the listed numbers.")
             continue
         break
-    detector = cv2.CascadeClassifier(directory + fileName)
+    detector = cv2.CascadeClassifier(detector_path)
     return detector, detector_name
 
 def initialize_recognizer():
@@ -47,7 +45,7 @@ def initialize_recognizer():
         try:
             choice = int(input(f"Please choose the recognizer model by selecting its corresponding number:\n"))
             if choice == 1:
-                recognizer_name = "LBPH"
+                recognizer_name = "LBPH (Local Binary Patterns Histograms)"
                 recognizer = cv2.face.LBPHFaceRecognizer_create()
             elif choice == 2:
                 recognizer_name = "EigenFace"

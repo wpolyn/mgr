@@ -11,9 +11,6 @@ monitoring = performance()
 display_size = (320, 240)
 crop_size = 320
 
-#facemark
-
-
 reference_faces = []
 face_counter = 0
 threshold = 0.363
@@ -46,38 +43,34 @@ if __name__ == '__main__':
                 faces = detector.detectMultiScale(gray, 1.3, 5)
 
                 #recognition
-                previous_faces = []
-                if faces is not None:
-                    for face in faces:
-                        x, y, w, h = map(int, face[:4])
-                        cv2.rectangle(image, (x, y), (x + w, y + h), color, thickness)
-                        print("faces:", faces)
-                        print("face:", face)
-                    # duży problem! - haarcascades nie zbiera współprzędnych oczu, czubka nosa i kącików ust, których potrzebuje map w alignCrop
-                    # wymaga użycia np facemarks albo wiecej haarcascades i obliczenia wsp
-                        aligned_face = recognizer.alignCrop(faces, face)
-                        features_face = recognizer.feature(aligned_face)
+                #previous_faces = []
+                #if faces is not None:
+                    #for face in faces:
+                        #x, y, w, h = map(int, face[:4])
+                        #cv2.rectangle(image, (x, y), (x + w, y + h), color, thickness)
+                        #aligned_face = recognizer.alignCrop(feed, face)
+                        #features_face = recognizer.feature(aligned_face)
                         
-                        best_match = 0
+                        #best_match = 0
                         #compare current faces to reference faces
-                        for reference_face, reference_label in reference_faces:
-                            match = recognizer.match(features_face, reference_face, cv2.FaceRecognizerSF_FR_COSINE)
+                        #for reference_face, reference_label in reference_faces:
+                        #    match = recognizer.match(features_face, reference_face, cv2.FaceRecognizerSF_FR_COSINE)
                             #find the best match
-                            if match > best_match:
-                                best_match = match
-                                best_label = reference_label
+                        #    if match > best_match:
+                        #        best_match = match
+                        #        best_label = reference_label
                         #check if the best match is over the threshold
-                        if best_match > threshold:
-                            label = best_label
-                            recognition = best_match
-                        else:
+                        #if best_match > threshold:
+                        #    label = best_label
+                        #    recognition = best_match
+                        #else:
                             #under the threshold - add a new face to reference_faces
-                            face_counter += 1
-                            label = f"Coleg {face_counter}"
-                            reference_faces.append((features_face, label))
-                            recognition = best_match
+                        #    face_counter += 1
+                        #    label = f"Coleg {face_counter}"
+                        #    reference_faces.append((features_face, label))
+                        #    recognition = best_match
                         #provide results for display
-                        previous_faces.append((face, recognition, label))
+                        #previous_faces.append((face, recognition, label))
                 frame_counter += 1
             else:
                 frame_counter += 1
@@ -86,8 +79,8 @@ if __name__ == '__main__':
             display = cv2.resize(image, display_size)
 
             #displaying results if ready
-            if ready and previous_faces is not None:
-                for face, recognition, label in previous_faces:
+            if ready and faces is not None:
+                for face in faces:
                     x, y, w, h = map(int, face[:4])
                 #for (x, y, w, h) in faces:
                     #align coordinates
@@ -102,7 +95,7 @@ if __name__ == '__main__':
                     w = int(w * width_alignment)
                     h = int(h * height_alignment)
                     cv2.rectangle(display, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                    cv2.putText(display, f"{label}: {recognition:.2f}", (x, y -10), fontFace, fontScale, color, thickness)
+                    #cv2.putText(display, f"{label}: {recognition:.2f}", (x, y -10), fontFace, fontScale, color, thickness)
 
             #horizontal display
             
