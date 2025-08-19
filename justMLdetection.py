@@ -2,12 +2,13 @@ import cv2
 
 from inits2 import initialize_camera, text_properties
 from performance2 import performance
-from CNNmodels import initialize_recognizer
+#from CNNmodels import initialize_recognizer
 from MLmodels import initialize_detector
+from landmarkcascades import get_landmarks
 detector, detector_name = initialize_detector()
-recognizer, recognizer_name = initialize_recognizer()
+#recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()
-
+face_detector, eye_detector, nose_detector, smile_detector = get_landmarks()
 display_size = (320, 240)
 crop_size = 320
 
@@ -41,6 +42,10 @@ if __name__ == '__main__':
                 #feed = cv2.resize(feed, input_size)
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 faces = detector.detectMultiScale(gray, 1.3, 5)
+                eyes = eye_detector.detectMultiScale(gray, 1.3, 5)
+                noses = nose_detector.detectMultiScale(gray, 1.3, 5)
+                #to be adjusted, awful results
+                smiles = smile_detector.detectMultiScale(gray, 1.3, 10)
 
                 #recognition
                 #previous_faces = []
@@ -79,7 +84,7 @@ if __name__ == '__main__':
             display = cv2.resize(image, display_size)
 
             #displaying results if ready
-            if ready and faces is not None:
+            if ready: #and faces is not None:
                 for face in faces:
                     x, y, w, h = map(int, face[:4])
                 #for (x, y, w, h) in faces:
@@ -96,6 +101,36 @@ if __name__ == '__main__':
                     h = int(h * height_alignment)
                     cv2.rectangle(display, (x, y), (x + w, y + h), (255, 0, 0), 2)
                     #cv2.putText(display, f"{label}: {recognition:.2f}", (x, y -10), fontFace, fontScale, color, thickness)
+                
+                for eye in eyes:
+                    x, y, w, h = map(int, eye[:4])
+                    width_alignment = (display_size[0] / w_image) #0.5
+                    height_alignment = (display_size[1] / h_image) #0.5
+                    x = int(x * width_alignment)
+                    y = int(y * height_alignment)
+                    w = int(w * width_alignment)
+                    h = int(h * height_alignment)
+                    cv2.rectangle(display, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+                for nose in noses:
+                    x, y, w, h = map(int, nose[:4])
+                    width_alignment = (display_size[0] / w_image) #0.5
+                    height_alignment = (display_size[1] / h_image) #0.5
+                    x = int(x * width_alignment)
+                    y = int(y * height_alignment)
+                    w = int(w * width_alignment)
+                    h = int(h * height_alignment)
+                    cv2.rectangle(display, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+                for smile in smiles:
+                    x, y, w, h = map(int, smile[:4])
+                    width_alignment = (display_size[0] / w_image) #0.5
+                    height_alignment = (display_size[1] / h_image) #0.5
+                    x = int(x * width_alignment)
+                    y = int(y * height_alignment)
+                    w = int(w * width_alignment)
+                    h = int(h * height_alignment)
+                    cv2.rectangle(display, (x, y), (x + w, y + h), (255, 255, 0), 2)
 
             #horizontal display
             
