@@ -45,8 +45,35 @@ if __name__ == '__main__':
 
 
                 #recognition
-                #previous_faces = []
-                #if faces is not None:
+                previous_faces = []
+                if faces is not None:
+                    for face in faces:
+                        x, y, w, h = map(int, face[:4])
+                        features = gray[y:y + h, x:x + w]
+                        width_alignment = (display_size[0] / w_image) #0.5
+                        height_alignment = (display_size[1] / h_image) #0.5
+                        eyes = eye_detector.detectMultiScale(features, 1.3, 5)
+                        noses = nose_detector.detectMultiScale(features, 1.3, 5)
+                        smiles = smile_detector.detectMultiScale(features, 1.3, 7)
+                    
+                        for eye in eyes[:2]:
+                            x_eye, y_eye, w_eye, h_eye = map(int, eye[:4])
+                            x_lens = (x_eye + (w_eye / 2))
+                            y_lens = (y_eye +(h_eye /2))
+
+                        if len(noses) > 0:
+                            x_nose, y_nose, w_nose, h_nose = map(int, noses[0])
+                            x_tip = (x_nose + (w_nose /2))
+                            y_tip = (y_nose + (y_nose /2))
+
+                        if len(smiles) > 0:
+                            x_smile, y_smile, w_smile, h_smile = map(int, smiles[0])
+                            x_left = x_smile
+                            y_left = (y_smile + (h_smile / 2))
+                            x_right = (x_smile + w_smile)
+                            y_right = (y_smile + (h_smile /2))
+
+                        features = []
                     #for face in faces:
                         #x, y, w, h = map(int, face[:4])
                         #cv2.rectangle(image, (x, y), (x + w, y + h), color, thickness)
@@ -82,41 +109,7 @@ if __name__ == '__main__':
 
             #displaying results if ready
             if ready and faces is not None:
-                for face in faces:
-                    x, y, w, h = map(int, face[:4])
-                    features = gray[y:y + h, x:x + w]
-                    width_alignment = (display_size[0] / w_image) #0.5
-                    height_alignment = (display_size[1] / h_image) #0.5
-                    eyes = eye_detector.detectMultiScale(features, 1.3, 5)
-                    noses = nose_detector.detectMultiScale(features, 1.3, 5)
-                    smiles = smile_detector.detectMultiScale(features, 1.3, 7)
-                    
-                    for eye in eyes[:2]:
-                        x_eye, y_eye, w_eye, h_eye = map(int, eye[:4])
-                        x_eyes = int((x_eye + x) * width_alignment)
-                        y_eyes = int((y_eye + y) * height_alignment)
-                        w_eyes = int((w_eye) * width_alignment)
-                        h_eyes = int((h_eye) * height_alignment)
-                        cv2.rectangle(display, (x_eyes, y_eyes), (x_eyes + w_eyes, y_eyes + h_eyes), (0, 255, 0), 2)
-                    if len(noses) > 0:
-                        x_nose, y_nose, w_nose, h_nose = map(int, noses[0])
-                        x_noses = int((x_nose + x) * width_alignment)
-                        y_noses = int((y_nose + y) * height_alignment)
-                        w_noses = int((w_nose) * width_alignment)
-                        h_noses = int((h_nose) * height_alignment)
-                        cv2.rectangle(display, (x_noses, y_noses), (x_noses + w_noses, y_noses + h_noses), (0, 0, 255), 2)
-                    if len(smiles) > 0:
-                        x_smile, y_smile, w_smile, h_smile = map(int, smiles[0])
-                        x_smiles = int((x_smile + x) * width_alignment)
-                        y_smiles = int((y_smile + y) * height_alignment)
-                        w_smiles = int((w_smile) * width_alignment)
-                        h_smiles = int((h_smile) * height_alignment)
-                        cv2.rectangle(display, (x_smiles, y_smiles), (x_smiles + w_smiles, y_smiles + h_smiles), (0, 255, 255), 2)
-                    x = int(x * width_alignment)
-                    y = int(y * height_alignment)
-                    w = int(w * width_alignment)
-                    h = int(h * height_alignment)
-                    cv2.rectangle(display, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
 
             #horizontal display
             
