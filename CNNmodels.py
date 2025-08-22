@@ -7,12 +7,12 @@ def initialize_detector():
 
     detector_catalogue = {
         "1" : "Normal-sized YuNet model (320x320 input)",
-        "2" : "Small-sized YuNet model (320x320 input)"
-        #,"3" : "Standard YuNet model (640x640 input)",
-        #"4" : "int8 quantized YuNet model (640x640 input)",
-        #"5" : "int8 block-quantized YuNet model (640x640 input)",
-        #,"6" : "Normal-sized dynamic YuNet model",
-        #"7" : "Small-sized dynamic YuNet model"
+        "2" : "Small-sized YuNet model (320x320 input)",
+        "3" : "Standard YuNet model (640x640 input)",
+        "4" : "int8 quantized YuNet model (640x640 input)",
+        "5" : "int8 block-quantized YuNet model (640x640 input)",
+        "6" : "Normal-sized YuNet model (dynamic input)",
+        "7" : "Small-sized YuNet model (dynamic input)"
     }
 
     for key in detector_catalogue:
@@ -24,29 +24,29 @@ def initialize_detector():
             if choice == 1:
                 model_path = "models/yunet/yunet_n_320_320.onnx"
                 detector_name = "YuNet_n_320x320"
-                input_size = input_320                
+                input_size = input_320
             elif choice == 2:
                 model_path = "models/yunet/yunet_s_320_320.onnx"
                 detector_name = "YuNet_s_320x320"
                 input_size = input_320
-            #elif choice == 3:
-                #model_path = "models/yunet/face_detection_yunet_2023mar.onnx"
-                #detector_name = "YuNet_640x640"
-                #input_size = input_640                
-            #elif choice == 4:
-                #model_path = "models/yunet/face_detection_yunet_2023mar_int8.onnx"
-                #detector_name = "YuNet_int8_640x640"
-                #input_size = input_640
-            #elif choice == 5:
-                #model_path = "models/yunet/face_detection_yunet_2023mar_int8bq.onnx"
-                #detector_name = "YuNet_int8bq_640x640"
-                #input_size = input_640
-            #elif choice == 6:
-                #model_path = "models/yunet4/yunet_n_dynamic.onnx"
-                #input_size = input_dynamic
-            #elif choice == 7:
-                #model_path = "models/yunet/yunet_s_dynamic.onnx"
-                #input_size = input_dynamic
+            elif choice == 3:
+                model_path = "models/yunet/face_detection_yunet_2023mar.onnx"
+                detector_name = "YuNet_640x640"
+                input_size = input_640
+            elif choice == 4:
+                model_path = "models/yunet/face_detection_yunet_2023mar_int8.onnx"
+                detector_name = "YuNet_int8_640x640"
+                input_size = input_640
+            elif choice == 5:
+                model_path = "models/yunet/face_detection_yunet_2023mar_int8bq.onnx"
+                detector_name = "YuNet_int8bq_640x640"
+                input_size = input_640
+            elif choice == 6:
+                model_path = "models/yunet4/yunet_n_dynamic.onnx"
+                input_size = input_dynamic
+            elif choice == 7:
+                model_path = "models/yunet/yunet_s_dynamic.onnx"
+                input_size = input_dynamic
             else:
                 print(f"Your input {choice} does not correspond to any model. Please modify your input.")
                 continue
