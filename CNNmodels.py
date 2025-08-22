@@ -42,7 +42,7 @@ def initialize_detector():
                 detector_name = "YuNet_int8bq_640x640"
                 input_size = input_640
             elif choice == 6:
-                model_path = "models/yunet4/yunet_n_dynamic.onnx"
+                model_path = "models/yunet/yunet_n_dynamic.onnx"
                 input_size = input_dynamic
             elif choice == 7:
                 model_path = "models/yunet/yunet_s_dynamic.onnx"
