@@ -3,54 +3,44 @@ import cv2
 from inits2 import initialize_camera, text_properties
 from performance2 import performance
 from CNNmodels import initialize_detector, initialize_recognizer
-print("This code is adjusted for a 640x640 detection model, please make the appropriate selection.")
+print("This implementation is adjusted for a custom 640x480 detector input resolution, please make the appropriate selection.")
 detector, detector_name, input_size = initialize_detector()
 recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()
 
 display_size = (320, 240)
-input_crop_size = 640
-display_crop_size = 960
+
+
 
 reference_faces = []
 face_counter = 0
 threshold = 0.363
 if __name__ == '__main__':
     cap, img_src = initialize_camera()
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     org, fontFace, fontScale, color, thickness = text_properties()
     ready = False
     previous_faces = []
-    
 
     #frame skipping settings
     frame_buffer = 2
     frame_counter = 0
 
-
     while (cap.isOpened()):
         ret, image = cap.read()
         image = cv2.flip(image, 1)
         key = cv2.waitKey(1) & 0xFF
-        h_image, w_image = image.shape[:2] #h=720 w=1280
-        x_input = (w_image - input_crop_size) // 2 #320
-        y_input = (h_image - input_crop_size) // 2 #40
-        
+        h_image, w_image = image.shape[:2]
         if ret:
             #detection and recognition inside frame skipping if ready
             if ready and frame_counter % frame_buffer == 0:
                 #model input processing and detection
-                #y: 40<->680=640 x: 320<->960=640
-                feed = image[y_input:y_input + input_crop_size, x_input:x_input + input_crop_size]
-                feed = cv2.resize(feed, input_size)
-                retval, faces = detector.detect(feed)
+                retval, faces = detector.detect(image)
                 #recognition
                 previous_faces = []
                 if faces is not None:
                     for face in faces:
                         x, y, w, h = map(int, face[:4])
-                        aligned_face = recognizer.alignCrop(feed, face)
+                        aligned_face = recognizer.alignCrop(image, face)
                         features_face = recognizer.feature(aligned_face)
                         
                         best_match = 0
@@ -76,33 +66,16 @@ if __name__ == '__main__':
                 frame_counter += 1
             else:
                 frame_counter += 1
-            """
-            image crop do 3x(320x240)=960x720, resize /3
-            x crop (1280-960) // 2 = 160
-            x_crop
-            y crop = 0
-            """
-            x_crop = (w_image - display_crop_size) // 2 #160
-            #y 0-720, 160:160+960
-            cropped_image = image[:, x_crop:x_crop+display_crop_size]
-            h_display, w_display = cropped_image.shape[:2]
-            print(h_display, w_display)
+
             #display processing
-            display = cv2.resize(cropped_image, display_size)
+            display = cv2.resize(image, display_size)
 
             #displaying results if ready
             if ready and previous_faces is not None:
                 for face, recognition, label in previous_faces:
                     x, y, w, h = map(int, face[:4])
-                    #align coordinates
-                    #crop alignment
-                    x = x + x_crop
-                    #y = y + y_input
-                    #resize alignment
-                    width_alignment = (display_size[0] / w_display) #0.33
-                    print(width_alignment)
-                    height_alignment = (display_size[1] / h_display) #0.33
-                    print(height_alignment)
+                    width_alignment = (display_size[0] / w_image) #0.5
+                    height_alignment = (display_size[1] / h_image) #0.5
                     x = int(x * width_alignment)
                     y = int(y * height_alignment)
                     w = int(w * width_alignment)

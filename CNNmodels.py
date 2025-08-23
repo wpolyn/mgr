@@ -3,53 +3,104 @@ import cv2
 def initialize_detector():
     input_320 = (320, 320)
     input_640 = (640, 640)
-    input_dynamic = (0, 0)
+    input_480 = (480, 480)
+    input_4x3 = (640, 480)
 
-    detector_catalogue = {
-        "1" : "Normal-sized YuNet model (320x320 input)",
-        "2" : "Small-sized YuNet model (320x320 input)",
-        "3" : "Standard YuNet model (640x640 input)",
-        "4" : "int8 quantized YuNet model (640x640 input)",
-        "5" : "int8 block-quantized YuNet model (640x640 input)",
-        "6" : "Normal-sized YuNet model (dynamic input)",
-        "7" : "Small-sized YuNet model (dynamic input)"
+    resolution_catalogue = {
+        1 : "320x320",
+        2 : "640x640",
+        3 : "480x480",
+        4 : "640x480"
     }
 
-    for key in detector_catalogue:
-        print(f"{key} : {detector_catalogue[key]}")
+    detector_catalogue = {
+        1 : "Normal-sized YuNet model (320x320 input)",
+        2 : "Small-sized YuNet model (320x320 input)",
+        3 : "Standard YuNet model (640x640 input)",
+        4 : "int8 quantized YuNet model (640x640 input)",
+        5 : "int8 block-quantized YuNet model (640x640 input)",
+        6 : "Normal-sized YuNet model (480x480 input)",
+        7 : "Small-sized YuNet model (480x480 input)",
+        8 : "Normal-sized YuNet model (640x480 input)",
+        9 : "Small-sized YuNet model (640x480 input)"
+    }
 
     while True:
         try:
-            choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
+            for key in resolution_catalogue:
+                print(f"{key} : {resolution_catalogue[key]}")
+            choice = int(input(f"Please choose the detector input resolution supported by this implementation:\n"))
             if choice == 1:
-                model_path = "models/yunet/yunet_n_320_320.onnx"
-                detector_name = "YuNet_n_320x320"
                 input_size = input_320
             elif choice == 2:
-                model_path = "models/yunet/yunet_s_320_320.onnx"
-                detector_name = "YuNet_s_320x320"
-                input_size = input_320
+                input_size = input_640
             elif choice == 3:
-                model_path = "models/yunet/face_detection_yunet_2023mar.onnx"
-                detector_name = "YuNet_640x640"
-                input_size = input_640
+                input_size = input_480
             elif choice == 4:
-                model_path = "models/yunet/face_detection_yunet_2023mar_int8.onnx"
-                detector_name = "YuNet_int8_640x640"
-                input_size = input_640
-            elif choice == 5:
-                model_path = "models/yunet/face_detection_yunet_2023mar_int8bq.onnx"
-                detector_name = "YuNet_int8bq_640x640"
-                input_size = input_640
-            elif choice == 6:
-                model_path = "models/yunet/yunet_n_dynamic.onnx"
-                input_size = input_dynamic
-            elif choice == 7:
-                model_path = "models/yunet/yunet_s_dynamic.onnx"
-                input_size = input_dynamic
+                input_size = input_4x3
             else:
-                print(f"Your input {choice} does not correspond to any model. Please modify your input.")
+                print(f"Your input {choice} does not correspond to any resolution. Please modify your input.")
                 continue
+
+            if input_size == input_320:
+                for key in detector_catalogue:
+                    if 1 <= key <= 2: 
+                        print(f"{key} : {detector_catalogue[key]}")
+                choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
+                if choice == 1:
+                    model_path = "models/yunet/yunet_n_320_320.onnx"
+                    detector_name = "YuNet_n_320x320"
+                elif choice == 2:
+                    model_path = "models/yunet/yunet_s_320_320.onnx"
+                    detector_name = "YuNet_s_320x320"
+                else:
+                    print(f"Your input {choice} does not correspond to any model. Please modify your input.")
+                    continue
+            elif input_size == input_640:
+                for key in detector_catalogue:
+                    if 3 <= key <= 5: 
+                        print(f"{key} : {detector_catalogue[key]}")
+                choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
+                if choice == 3:
+                    model_path = "models/yunet/face_detection_yunet_2023mar.onnx"
+                    detector_name = "YuNet_640x640"
+                elif choice == 4:
+                    model_path = "models/yunet/face_detection_yunet_2023mar_int8.onnx"
+                    detector_name = "YuNet_int8_640x640"
+                elif choice == 5:
+                    model_path = "models/yunet/face_detection_yunet_2023mar_int8bq.onnx"
+                    detector_name = "YuNet_int8bq_640x640"
+                else:
+                    print(f"Your input {choice} does not correspond to any model. Please modify your input.")
+                    continue
+            elif input_size == input_480:
+                for key in detector_catalogue:
+                    if 6 <= key <= 7: 
+                        print(f"{key} : {detector_catalogue[key]}")
+                choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
+                if choice == 6:
+                    model_path = "models/yunet/yunet_n_fixed_480x480.onnx"
+                    detector_name = "YuNet_n_480x480"
+                elif choice == 7:
+                    model_path = "models/yunet/yunet_s_fixed_480x480.onnx"
+                    detector_name = "YuNet_s_480x480"
+                else:
+                    print(f"Your input {choice} does not correspond to any model. Please modify your input.")
+                    continue     
+            elif input_size == input_4x3:
+                for key in detector_catalogue:
+                    if 8 <= key <= 9: 
+                        print(f"{key} : {detector_catalogue[key]}")
+                choice = int(input(f"Please choose the detector model by selecting its corresponding number:\n"))
+                if choice == 8:
+                    model_path = "models/yunet/yunet_n_fixed_640x480.onnx"
+                    detector_name = "YuNet_n_640x480"
+                elif choice == 9:
+                    model_path = "models/yunet/yunet_s_fixed_640x480.onnx"
+                    detector_name = "YuNet_n_640x480"
+                else:
+                    print(f"Your input {choice} does not correspond to any model. Please modify your input.")
+                    continue
         except ValueError:
             print("Please choose one of the listed numbers.")
             continue

@@ -3,13 +3,14 @@ import cv2
 from inits2 import initialize_camera, text_properties
 from performance2 import performance
 from CNNmodels import initialize_detector, initialize_recognizer
-print("This code is adjusted for a 640x640 detection model, please make the appropriate selection.")
+print("This implementation is adjusted for a 640x640 detector input resolution, please make the appropriate selection.")
 detector, detector_name, input_size = initialize_detector()
 recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()
 
 display_size = (320, 240)
 crop_size = 640
+
 
 reference_faces = []
 face_counter = 0
@@ -22,11 +23,9 @@ if __name__ == '__main__':
     ready = False
     previous_faces = []
     
-
     #frame skipping settings
     frame_buffer = 2
     frame_counter = 0
-
 
     while (cap.isOpened()):
         ret, image = cap.read()

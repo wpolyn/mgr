@@ -3,12 +3,14 @@ import cv2
 from inits2 import initialize_camera, text_properties
 from performance2 import performance
 from CNNmodels import initialize_detector, initialize_recognizer
-print("This code is adjusted for a dynamic detection model, please make the appropriate selection (6-7).")
+print("This implementation is adjusted for a 480x480 detector input resolution, please make the appropriate selection.")
 detector, detector_name, input_size = initialize_detector()
 recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()
 
 display_size = (320, 240)
+crop_size = 480
+
 
 reference_faces = []
 face_counter = 0
@@ -28,18 +30,24 @@ if __name__ == '__main__':
         ret, image = cap.read()
         image = cv2.flip(image, 1)
         key = cv2.waitKey(1) & 0xFF
-        h_image, w_image = image.shape[:2]
+        h_image, w_image = image.shape[:2] #h=480 w=640
+        x_input = (w_image - crop_size) // 2 #80
+        y_input = (h_image - crop_size) // 2 #0
+        
         if ret:
             #detection and recognition inside frame skipping if ready
             if ready and frame_counter % frame_buffer == 0:
                 #model input processing and detection
-                retval, faces = detector.detect(image)
+                #y: 80<->400=320 x: 160<->480=320
+                feed = image[y_input:y_input + crop_size, x_input:x_input + crop_size]
+                feed = cv2.resize(feed, input_size)
+                retval, faces = detector.detect(feed)
                 #recognition
                 previous_faces = []
                 if faces is not None:
                     for face in faces:
                         x, y, w, h = map(int, face[:4])
-                        aligned_face = recognizer.alignCrop(image, face)
+                        aligned_face = recognizer.alignCrop(feed, face)
                         features_face = recognizer.feature(aligned_face)
                         
                         best_match = 0
@@ -73,6 +81,11 @@ if __name__ == '__main__':
             if ready and previous_faces is not None:
                 for face, recognition, label in previous_faces:
                     x, y, w, h = map(int, face[:4])
+                    #align coordinates
+                    #crop alignment
+                    x = x + x_input
+                    y = y + y_input
+                    #resize alignment
                     width_alignment = (display_size[0] / w_image) #0.5
                     height_alignment = (display_size[1] / h_image) #0.5
                     x = int(x * width_alignment)
