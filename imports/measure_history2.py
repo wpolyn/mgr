@@ -3,7 +3,7 @@ import pickle
 #memory utilization history handling
 def _load_mem_history():
     try:
-        with open('mem_history.pkl', 'rb') as f:
+        with open('pickles/mem_history.pkl', 'rb') as f:
             mem_history = pickle.load(f)
             return mem_history
     except FileNotFoundError:
@@ -11,7 +11,7 @@ def _load_mem_history():
         return {}
 
 def _save_mem_history(mem_history):
-    with open('mem_history.pkl', 'wb') as f:
+    with open('pickles/mem_history.pkl', 'wb') as f:
         pickle.dump(mem_history, f)
 
 def append_mem_history(model_name, mem_avg):
@@ -25,7 +25,7 @@ def append_mem_history(model_name, mem_avg):
 #cpu utilization history handling
 def _load_cpu_history():
     try:
-        with open('cpu_history.pkl', 'rb') as f:
+        with open('pickles/cpu_history.pkl', 'rb') as f:
             cpu_history = pickle.load(f)
             return cpu_history
     except FileNotFoundError:
@@ -33,7 +33,7 @@ def _load_cpu_history():
         return {}
 
 def _save_cpu_history(cpu_history):
-    with open('cpu_history.pkl', 'wb') as f:
+    with open('pickles/cpu_history.pkl', 'wb') as f:
         pickle.dump(cpu_history, f)
 
 def append_cpu_history(model_name, cpu_avg):
@@ -47,7 +47,7 @@ def append_cpu_history(model_name, cpu_avg):
 #duration history handling
 def _load_duration_history():
     try:
-        with open('duration_history.pkl', 'rb') as f:
+        with open('pickles/duration_history.pkl', 'rb') as f:
             duration_history = pickle.load(f)
             print(f"Current duration records:\n{duration_history}")
             return duration_history
@@ -56,7 +56,7 @@ def _load_duration_history():
         return {}
     
 def _save_duration_history(duration_history):
-    with open('duration_history.pkl', 'wb') as f:
+    with open('pickles/duration_history.pkl', 'wb') as f:
         pickle.dump(duration_history, f)
 
 def append_duration_history(model_name, duration):

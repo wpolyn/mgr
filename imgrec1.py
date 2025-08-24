@@ -1,10 +1,10 @@
 import cv2
 
-from MLmodels import initialize_detector
-from inits3 import initialize_camera, text_properties, horizontal_image_processing, vertical_image_processing
-from inits_registry import load_registry
-from performance2 import performance
-from measure_history2 import append_mem_history, append_cpu_history, append_duration_history
+from imports.MLmodels import initialize_detector
+from imports.inits3 import initialize_camera, text_properties, horizontal_image_processing, vertical_image_processing
+from imports.inits_registry import load_registry
+from imports.performance2 import performance
+from imports.measure_history2 import append_mem_history, append_cpu_history, append_duration_history
 
 if __name__ == '__main__':
     cap, img_src = initialize_camera()

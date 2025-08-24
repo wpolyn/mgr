@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
 
-from inits3 import initialize_camera, text_properties
-from performance2 import performance
-from CNNmodels import initialize_recognizer
-from MLmodels import initialize_detector
-from landmarkcascades import get_landmarks
+from imports.inits3 import initialize_camera, text_properties
+from imports.performance2 import performance
+from imports.CNNmodels import initialize_recognizer
+from imports.MLmodels import initialize_detector
+from imports.landmarkcascades import get_landmarks
+
 detector, detector_name = initialize_detector()
 recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()

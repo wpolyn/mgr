@@ -1,8 +1,8 @@
 import cv2
 
-from inits3 import initialize_camera, text_properties, horizontal_image_processing, vertical_image_processing
-from inits_registry import load_registry, invert_registry
-from MLmodels import initialize_detector, initialize_recognizer
+from imports.inits3 import initialize_camera, text_properties, horizontal_image_processing, vertical_image_processing
+from imports.inits_registry import load_registry, invert_registry
+from imports.MLmodels import initialize_detector, initialize_recognizer
 
 cap, img_src = initialize_camera()
 detector, detector_name = initialize_detector()

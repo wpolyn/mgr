@@ -5,7 +5,7 @@ def load_registry():
     print("Loading the registry...")
     label_to_id = {}
     try:
-        with open('label_to_id.pkl', 'rb') as f:
+        with open('pickles/label_to_id.pkl', 'rb') as f:
             label_to_id = pickle.load(f)
         print(f"Registry loaded successfully:\n{label_to_id}")
     except EOFError:
@@ -22,7 +22,7 @@ def invert_registry(label_to_id):
 #save registry from label_to_id
 def save_registry(label_to_id):
     print("Saving the registry...")
-    registry = 'label_to_id.pkl'
+    registry = 'pickles/label_to_id.pkl'
     with open(registry, 'wb') as f:
         pickle.dump(label_to_id, f)
     print("Registry saved successfully.") 

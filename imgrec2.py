@@ -2,8 +2,8 @@ import cv2
 import os
 import numpy as np
 
-from MLmodels import initialize_detector, initialize_recognizer
-from inits_registry import save_registry
+from imports.MLmodels import initialize_detector, initialize_recognizer
+from imports.inits_registry import save_registry
 
 def get_images_and_labels(path):
     image_paths = [os.path.join(path, f) for f in os.listdir(path)] 
