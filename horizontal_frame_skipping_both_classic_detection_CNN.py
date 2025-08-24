@@ -7,6 +7,7 @@ from imports.CNNmodels import initialize_recognizer
 from imports.MLmodels import initialize_detector
 from imports.landmarkcascades import get_landmarks
 
+print("This implementation is adjusted for the haarcascades detector, please make the appropriate selection.")
 detector, detector_name = initialize_detector()
 recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()

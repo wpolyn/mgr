@@ -23,7 +23,7 @@ while (cap.isOpened()):
             cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             img_id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
             if confidence < 80:  #if confidence less than 80, face detected and recognized
-                cv2.putText(image, id_to_label[img_id], org, fontFace, fontScale, color, thickness)
+                cv2.putText(image, f"{id_to_label[img_id]} : {confidence:.2f}", org, fontFace, fontScale, color, thickness)
             else:
                 img_id = "unknown" 
                 cv2.putText(image, str(img_id), org, fontFace, fontScale, color, thickness)

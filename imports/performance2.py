@@ -9,8 +9,6 @@ class performance:
         self.cpu_usage = []
         self._measuring = False
         self._thread = None
-        mem = pu.virtual_memory().percent
-        cpu = pu.cpu_percent(interval=0, percpu=False)
 
     def _monitoring(self):
         while self._measuring:
