@@ -1,6 +1,6 @@
 import cv2
 
-from inits2 import initialize_camera, text_properties
+from inits3 import initialize_camera, text_properties
 from performance2 import performance
 from CNNmodels import initialize_detector, initialize_recognizer
 print("This implementation is adjusted for a 480x480 detector input resolution, please make the appropriate selection.")

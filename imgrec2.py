@@ -44,7 +44,8 @@ if __name__ == '__main__':
             current_id += 1
     print(label_to_id)
     ids = [label_to_id[label] for label in labels]
-
+    
+    #ssave to pickle
     save_registry(label_to_id)
 
     #train the model

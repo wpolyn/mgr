@@ -3,6 +3,7 @@ import pickle
 #load registry from .pkl
 def load_registry():
     print("Loading the registry...")
+    label_to_id = {}
     try:
         with open('label_to_id.pkl', 'rb') as f:
             label_to_id = pickle.load(f)

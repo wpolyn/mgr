@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from inits2 import initialize_camera, text_properties
+from inits3 import initialize_camera, text_properties
 from performance2 import performance
 from CNNmodels import initialize_recognizer
 from MLmodels import initialize_detector
