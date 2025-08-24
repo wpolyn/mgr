@@ -1,5 +1,4 @@
 import cv2
-import os
 import pickle
 
 def initialize_camera():
@@ -27,11 +26,11 @@ def initialize_camera():
 def image_processing(image, detector):
     image = cv2.flip(image,1)
     #image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    h, w = image.shape[:2]
-    w1 = h*240//320
-    x1 = (w-w1)//2
-    image = image[:, x1:x1+w1]
-    image = cv2.resize(image, (240, 320))
+    h, w = image.shape[:2] #h=480 w=640
+    w1 = h*240//320 #360 #albo 0.75
+    x1 = (w-w1)//2 #(640-360)//2=140
+    image = image[:, x1:x1+w1] #y 0:480, x 140:140+360 (360, 480) #1.5 same ratio
+    image = cv2.resize(image, (240, 320)) 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = detector.detectMultiScale(gray, 1.3, 5)
     return image, gray, faces

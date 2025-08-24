@@ -1,8 +1,9 @@
+import cv2
 import os
-import pickle
 import numpy as np
 
-from models import initialize_detector, initialize_recognizer
+from MLmodels import initialize_detector, initialize_recognizer
+from inits_registry import save_registry
 
 def get_images_and_labels(path):
     image_paths = [os.path.join(path, f) for f in os.listdir(path)] 
@@ -14,22 +15,24 @@ def get_images_and_labels(path):
             continue
         #retrieve all labels
         image_label = str(os.path.split(image_path)[-1].split("_")[0])
+        #retrieve images
+        images = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
         #detect faces
-        faces = detector.detectMultiScale(image_np)
+        faces = detector.detectMultiScale(images)
         #crop and store face samples, store all labels
         for (x, y, w, h) in faces:
-            face_samples.append(image_np[y:y + h, x:x + w])
+            face_samples.append(images[y:y + h, x:x + w])
             labels.append(image_label)
     return face_samples, labels
 
 if __name__ == '__main__':
     img_src = '/root/imagedb' 
-    detector = initialize_detector()
-    recognizer = initialize_recognizer()
+    detector, detector_name = initialize_detector()
+    recognizer, recognizer_name = initialize_recognizer()
 
     #run the function
     print("Creating samples...")
-    faces, labels = get_images_and_labels(img_src+'/new/')
+    faces, labels = get_images_and_labels(img_src+'/images/')
 
     #convert unique labels to IDs and save the pairs 
     ids = []
@@ -41,21 +44,12 @@ if __name__ == '__main__':
             current_id += 1
     print(label_to_id)
     ids = [label_to_id[label] for label in labels]
-    #print(ids)
 
-    #save the label_to_id registry in a .pkl file
-    print("Saving the registry...")
-    registry = 'label_to_id.pkl'
-    with open(registry, 'wb') as f:
-        pickle.dump(label_to_id, f)
-    if os.path.exists(registry) and os.path.getsize(registry) > 0:
-        print("Registry saved successfully.") 
+    save_registry(label_to_id)
 
     #train the model
     print("Training the model...")
-
     recognizer.train(faces, np.array(ids))
-
     #save the model .yml file
     print("Saving the model...")
     recognizer.save(img_src+'/model.yml')

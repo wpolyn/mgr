@@ -76,10 +76,9 @@ if __name__ == '__main__':
                 frame_counter += 1
 
             x_crop = (w_image - display_crop_size) // 2 #160
-            #y 0-720, x 160:160+960
+            #y 0:720, x 160:160+960
             cropped_image = image[:, x_crop:x_crop+display_crop_size]
             h_display, w_display = cropped_image.shape[:2]
-            print(h_display, w_display)
             #display processing
             display = cv2.resize(cropped_image, display_size)
 
@@ -90,6 +89,7 @@ if __name__ == '__main__':
                     #align coordinates
                     #crop alignment
                     x = x + x_crop
+                    
                     #resize alignment
                     width_alignment = (display_size[0] / w_display) #0.33(3)
                     height_alignment = (display_size[1] / h_display) #0.33(3)

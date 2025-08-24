@@ -49,6 +49,7 @@ def _load_duration_history():
     try:
         with open('duration_history.pkl', 'rb') as f:
             duration_history = pickle.load(f)
+            print(f"Current duration records:\n{duration_history}")
             return duration_history
     except FileNotFoundError:
         print("Duration history file not found. Creating a new file.")

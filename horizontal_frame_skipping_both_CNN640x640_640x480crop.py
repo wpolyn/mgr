@@ -9,8 +9,8 @@ recognizer, recognizer_name = initialize_recognizer()
 monitoring = performance()
 
 display_size = (320, 240)
-crop_size = 640
-
+input_crop_size = 640
+display_crop_size = 480
 
 reference_faces = []
 face_counter = 0
@@ -32,16 +32,18 @@ if __name__ == '__main__':
         image = cv2.flip(image, 1)
         key = cv2.waitKey(1) & 0xFF
         h_image, w_image = image.shape[:2] #h=720 w=1280
-        x_input = (w_image - crop_size) // 2 #320
-        y_input = (h_image - crop_size) // 2 #40
-        
+        x_input = (w_image - input_crop_size) // 2 #320
+        y_input = (h_image - input_crop_size) // 2 #40
+        feed = image[y_input:y_input + input_crop_size, x_input:x_input + input_crop_size]
+        feed = cv2.resize(feed, input_size)
+
         if ret:
             #detection and recognition inside frame skipping if ready
             if ready and frame_counter % frame_buffer == 0:
                 #model input processing and detection
                 #y: 40<->680=640 x: 320<->960=640
-                feed = image[y_input:y_input + crop_size, x_input:x_input + crop_size]
-                feed = cv2.resize(feed, input_size)
+                #feed = image[y_input:y_input + input_crop_size, x_input:x_input + input_crop_size]
+                #feed = cv2.resize(feed, input_size)
                 retval, faces = detector.detect(feed)
                 #recognition
                 previous_faces = []
@@ -74,19 +76,13 @@ if __name__ == '__main__':
                 frame_counter += 1
             else:
                 frame_counter += 1
-            """
-            image crop do 3x(320x240)=960x720, resize /3
-            x crop (1280-960) // 2 = 160
-            y crop = 0
-
-            albo
-            feed crop do 640x480, resize /2
-            x crop = 0
-            y crop (640-480) // 2 =80
-
-            """
+            
+            y_crop =  (input_crop_size - display_crop_size) // 2 #80
+            #y 80:80+480 x 0:640
+            cropped_feed = feed[y_crop:y_crop+display_crop_size, :]
+            h_display, w_display = cropped_feed.shape[:2]
             #display processing
-            display = cv2.resize(image, display_size)
+            display = cv2.resize(cropped_feed, display_size)
 
             #displaying results if ready
             if ready and previous_faces is not None:
@@ -94,11 +90,11 @@ if __name__ == '__main__':
                     x, y, w, h = map(int, face[:4])
                     #align coordinates
                     #crop alignment
-                    x = x + x_input
-                    y = y + y_input
+
+                    y = y - y_crop
                     #resize alignment
-                    width_alignment = (display_size[0] / w_image) #0.5
-                    height_alignment = (display_size[1] / h_image) #0.5
+                    width_alignment = (display_size[0] / w_display) #0.5
+                    height_alignment = (display_size[1] / h_display) #0.5
                     x = int(x * width_alignment)
                     y = int(y * height_alignment)
                     w = int(w * width_alignment)
