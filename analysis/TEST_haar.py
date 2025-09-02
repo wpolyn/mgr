@@ -6,8 +6,8 @@ import pickle
 from imports.MLmodels import initialize_detector
 
 detector, detector_model = initialize_detector()
-main_dir = "WIDER_val"
-output_dir = "WIDER_val_results"
+main_dir = "TEST_val"
+output_dir = "TEST_val_results"
 
 if __name__ == '__main__':
     overall_output = []
@@ -17,7 +17,6 @@ if __name__ == '__main__':
     for sub_dir, dirs, filenames in os.walk(main_dir, topdown=True):
         sub_path = os.path.relpath(sub_dir, main_dir)
         for filename in filenames:
-            print(filename)
             txtname = (os.path.splitext(filename)[0]+".txt") #3_Riot_Riot_3_604.txt
             txtcontent = (os.path.splitext(filename)[0]) #3_Riot_Riot_3_604
             #dirfile = (os.path.join(sub_path, filename)) #3--Riot/3_Riot_Riot_3_958.jpg
@@ -73,3 +72,21 @@ if __name__ == '__main__':
     print(overall_output)
     with open('overall_output.pkl', 'wb') as f:
         pickle.dump(overall_output, f)
+#TODO pozbierac latency i ilosc twarzy sumaryczne poza pliki wynikowe
+
+"""
+docelowy output przyklad
+0--Parade/0_Parade_marchingband_1_869.jpg
+5
+70 194 61 80 
+306 212 53 66 
+520 205 53 69 
+704 324 45 60 
+883 332 46 59
+
+
+0_Parade_marchingband_1_20
+1
+541 354 36 46 1.000
+
+"""
