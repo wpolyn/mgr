@@ -3,11 +3,11 @@ import cv2
 import time
 import pickle
 
-from imports.MLmodels import initialize_detector
+from imports.CNNmodels import initialize_detector
 
-detector, detector_model = initialize_detector()
-main_dir = "WIDER_val"
-output_dir = "WIDER_val_results"
+detector, detector_model, input_size = initialize_detector()
+main_dir = "TEST_val"
+output_dir = "TEST_val_results"
 
 if __name__ == '__main__':
     overall_output = []
@@ -28,11 +28,21 @@ if __name__ == '__main__':
             output_path = os.path.join(output_subdirs, txtname) #TEST_val_results/1--Handshaking/1_Handshaking_Handshaking_1_134.txt
 
             output.append(txtcontent)
-
+            #PADDING!
             image = cv2.imread(fullfile)
             start_timestamp = time.time()
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            faces, reject_levels, level_weights = detector.detectMultiScale3(gray, scaleFactor = 1.3, minNeighbors = 5, outputRejectLevels = True)
+            h_image, w_image = image.shape[:2]
+            if w_image > h_image:
+                alignment = (w_image / input_size[0])
+                bottom_pad = w_image - h_image
+                #cv.copyMakeBorder(	src, top, bottom, left, right, borderType[, dst[, value]]	) -> 	dst
+                image = cv2.copyMakeBorder(image, 0, bottom_pad, 0, 0, cv2.BORDER_CONSTANT, value = (0, 0, 0)) #np kwadrat 1273x1273
+            elif h_image > w_image:
+                alignment = (h_image / input_size[0])
+                right_pad = h_image = w_image
+                image = cv2.copyMakeBorder(image, 0, 0, 0, right_pad, cv2.BORDER_CONSTANT, value = (0, 0, 0))
+            image = cv2.resize(image, input_size)
+            retval, faces = detector.detect(image)
             end_timestamp = time.time()
             duration = end_timestamp - start_timestamp
 
@@ -44,18 +54,21 @@ if __name__ == '__main__':
                 latency = duration
 
             latency = int(latency * 1000)
-            #print(f"{latency} ms")
+            print(f"{latency} ms")
             overall_faces += detected_faces
             overall_duration += duration
             overall_files += 1
             output.append(str(detected_faces))
 
             if faces is not None:
-                #level_weights is not 0-1!
-                for face, score in zip(faces, level_weights):
+                for face in faces:
                     x, y, w, h = map(int, face[:4])
-                    print(score)
-                    face_report = (f"{x} {y} {w} {h} {score:.2f}")
+                    score = float(face[-1])
+                    x = int(x * alignment)
+                    y = int(y * alignment)
+                    w = int(w * alignment)
+                    h = int(h * alignment)
+                    face_report = (f"{x} {y} {w} {h} {score:.4f}")
                     output.append(face_report)
 
             with open (output_path, "w") as f:
@@ -74,3 +87,17 @@ if __name__ == '__main__':
     print(overall_output)
     with open('overall_output.pkl', 'wb') as f:
         pickle.dump(overall_output, f)
+
+"""
+void cv::copyMakeBorder 	( 	InputArray  	src,
+		OutputArray  	dst,
+		int  	top,
+		int  	bottom,
+		int  	left,
+		int  	right,
+		int  	borderType,
+		const Scalar &  	value = Scalar() 
+	) 		
+Python:
+	cv.copyMakeBorder(	src, top, bottom, left, right, borderType[, dst[, value]]	) -> 	dst
+"""
