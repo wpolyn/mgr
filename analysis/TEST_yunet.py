@@ -6,6 +6,9 @@ import pickle
 from imports.CNNmodels import initialize_detector
 
 detector, detector_model, input_size = initialize_detector()
+confidence_threshold = 0.1
+detector.setScoreThreshold(confidence_threshold)
+print(detector.getScoreThreshold())
 main_dir = "TEST_val"
 output_dir = "TEST_val_results"
 
@@ -75,6 +78,7 @@ if __name__ == '__main__':
                 f.write("\n".join(output))
     overall_output.append(f"main_dir : {main_dir}")
     overall_output.append(f"detector_model : {detector_model}")
+    overall_output.append(f"confidence_threshold : {confidence_threshold}")
     overall_output.append(f"overall_files : {overall_files}")
     overall_output.append(f"overall_faces : {overall_faces}")
     overall_output.append(f"overall_duration : {overall_duration:.3f} s")

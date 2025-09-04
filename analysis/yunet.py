@@ -6,8 +6,11 @@ import pickle
 from imports.CNNmodels import initialize_detector
 
 detector, detector_model, input_size = initialize_detector()
-main_dir = "TEST_val"
-output_dir = "TEST_val_results"
+confidence_threshold = 0.1
+detector.setScoreThreshold(confidence_threshold)
+print(detector.getScoreThreshold())
+main_dir = "WIDER_val"
+output_dir = "WIDER_val_results"
 
 if __name__ == '__main__':
     overall_output = []
@@ -75,6 +78,7 @@ if __name__ == '__main__':
                 f.write("\n".join(output))
     overall_output.append(f"main_dir : {main_dir}")
     overall_output.append(f"detector_model : {detector_model}")
+    overall_output.append(f"confidence_threshold : {confidence_threshold}")
     overall_output.append(f"overall_files : {overall_files}")
     overall_output.append(f"overall_faces : {overall_faces}")
     overall_output.append(f"overall_duration : {overall_duration:.3f} s")
@@ -87,17 +91,3 @@ if __name__ == '__main__':
     print(overall_output)
     with open('overall_output.pkl', 'wb') as f:
         pickle.dump(overall_output, f)
-
-"""
-void cv::copyMakeBorder 	( 	InputArray  	src,
-		OutputArray  	dst,
-		int  	top,
-		int  	bottom,
-		int  	left,
-		int  	right,
-		int  	borderType,
-		const Scalar &  	value = Scalar() 
-	) 		
-Python:
-	cv.copyMakeBorder(	src, top, bottom, left, right, borderType[, dst[, value]]	) -> 	dst
-"""
